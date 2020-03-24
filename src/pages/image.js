@@ -13,24 +13,27 @@ const ImagePage = () => {
   const { id } = useParams();
   const [image, setImage] = useState({});
 
-  useEffect(async () => {
-    try {
-      const endpoint = ENDPOINT.replace(":id", id);
-      const { data } = await axios.get(endpoint);
-      if (typeof data !== "object") {
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const endpoint = ENDPOINT.replace(":id", id);
+        const { data } = await axios.get(endpoint);
+        if (typeof data !== "object") {
+        }
+        setImage(data);
+      } catch (err) {
+        // TODO: error handling,
+        alert(err);
       }
-      setImage(data);
-    } catch (err) {
-      // TODO: error handling,
-      alert(err);
-    }
-  }, []);
+    };
+    fetchData();
+  }, [id]);
 
   return (
     <Layout>
       {!image && "Please wait a moment..."}
       {image && (
-        <React.Fragment>
+        <>
           <Grid container spacing={2} justify="center">
             <Grid item xs={12}>
               <Grid container justify="center">
@@ -45,7 +48,7 @@ const ImagePage = () => {
               <img
                 width="100%"
                 src={image.download_url}
-                alt={`An image by ${image.author}`}
+                alt={`Author: ${image.author}`}
               />
               Author: {image.author}
             </Grid>
@@ -70,7 +73,7 @@ const ImagePage = () => {
               </Grid>
             </Grid>
           </div>
-        </React.Fragment>
+        </>
       )}
     </Layout>
   );

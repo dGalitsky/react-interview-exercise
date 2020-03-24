@@ -12,6 +12,7 @@ import { MdFavorite } from "react-icons/md";
 import axios from "axios";
 
 import Layout from "../components/layout";
+import InfiniteScroll from "../components/infiniteScroll";
 
 const ENDPOINT = "https://picsum.photos/v2/list";
 const IMAGES_LIMIT = 10;
@@ -19,6 +20,7 @@ const IMAGES_LIMIT = 10;
 class Homepage extends React.Component {
   state = {
     images: [],
+    nextPage: 1,
     err: null,
     done: false
   };
@@ -29,18 +31,23 @@ class Homepage extends React.Component {
 
   appendImages(newImages) {
     this.setState(ps => ({
-      images: ps.images.concat(newImages)
+      images: ps.images.concat(newImages),
+      nextPage: ps.nextPage + 1
     }));
   }
 
-  async getImages(page = 1) {
+  async getImages() {
+    if (this.state.done) {
+      return;
+    }
     try {
       const { data } = await axios.get(ENDPOINT, {
-        params: { page, limit: IMAGES_LIMIT }
+        params: { page: this.state.nextPage, limit: IMAGES_LIMIT }
       });
       if (data.length) {
         this.appendImages(data);
       } else {
+        this.setState({ done: true });
       }
     } catch (err) {
       // TODO: error handling
@@ -75,9 +82,11 @@ class Homepage extends React.Component {
     return (
       <Layout>
         {images && (
-          <Grid container spacing={2}>
-            {cards}
-          </Grid>
+          <InfiniteScroll onBottomHit={() => this.getImages()}>
+            <Grid container spacing={2}>
+              {cards}
+            </Grid>
+          </InfiniteScroll>
         )}
       </Layout>
     );
