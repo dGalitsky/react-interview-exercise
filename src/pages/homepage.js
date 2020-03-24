@@ -9,106 +9,76 @@ import {
   Button
 } from "@material-ui/core";
 import { MdFavorite } from "react-icons/md";
+import axios from "axios";
 
 import Layout from "../components/layout";
 
+const ENDPOINT = "https://picsum.photos/v2/list";
+const IMAGES_LIMIT = 10;
+
 class Homepage extends React.Component {
   state = {
-    images: []
+    images: [],
+    err: null,
+    done: false
   };
+
+  componentDidMount() {
+    this.getImages();
+  }
+
+  appendImages(newImages) {
+    this.setState(ps => ({
+      images: ps.images.concat(newImages)
+    }));
+  }
+
+  async getImages(page = 1) {
+    try {
+      const { data } = await axios.get(ENDPOINT, {
+        params: { page, limit: IMAGES_LIMIT }
+      });
+      if (data.length) {
+        this.appendImages(data);
+      } else {
+      }
+    } catch (err) {
+      // TODO: error handling
+      alert(err);
+    }
+  }
 
   likeImage = () => {};
 
   render() {
+    const { images } = this.state;
+    const cards = images.map(image => (
+      <Grid item xs={6} sm={4} lg={2} key={image.id}>
+        <Card>
+          <CardHeader title={image.author || "Unknown author"} />
+          <Link to={image.url}>
+            <CardMedia
+              style={{ paddingTop: "56.25%" }}
+              image={image.download_url}
+              title={image.author}
+            />
+          </Link>
+          <CardActions disableSpacing>
+            <Button>
+              <MdFavorite /> 0
+            </Button>
+          </CardActions>
+        </Card>
+      </Grid>
+    ));
+
     return (
       <Layout>
-        <Grid container spacing={2}>
-          <Grid item xs={2}>
-            <Card>
-              <CardHeader title={<Link to="/">Author of image</Link>} />
-              <Link to="/">
-                <CardMedia
-                  style={{ paddingTop: '56.25%' }}
-                  image="https://images.pexels.com/photos/45201/kitty-cat-kitten-pet-45201.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
-                  title="Author"
-                />
-              </Link>
-              <CardActions disableSpacing>
-                <Button>
-                  <MdFavorite /> 0
-                </Button>
-              </CardActions>
-            </Card>
+        {images && (
+          <Grid container spacing={2}>
+            {cards}
           </Grid>
-          <Grid item xs={2}>
-            <Card>
-              <CardHeader title={<Link to="/">Author of image</Link>} />
-              <Link to="/">
-                <CardMedia
-                  style={{ paddingTop: '56.25%' }}
-                  image="https://images.pexels.com/photos/45201/kitty-cat-kitten-pet-45201.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
-                  title="Author"
-                />
-              </Link>
-              <CardActions disableSpacing>
-                <Button>
-                  <MdFavorite /> 0
-                </Button>
-              </CardActions>
-            </Card>
-          </Grid>
-          <Grid item xs={2}>
-            <Card>
-              <CardHeader title={<Link to="/">Author of image</Link>} />
-              <Link to="/">
-                <CardMedia
-                  style={{ paddingTop: '56.25%' }}
-                  image="https://images.pexels.com/photos/45201/kitty-cat-kitten-pet-45201.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
-                  title="Author"
-                />
-              </Link>
-              <CardActions disableSpacing>
-                <Button>
-                  <MdFavorite /> 0
-                </Button>
-              </CardActions>
-            </Card>
-          </Grid>
-          <Grid item xs={2}>
-            <Card>
-              <CardHeader title={<Link to="/">Author of image</Link>} />
-              <Link to="/">
-                <CardMedia
-                  style={{ paddingTop: '56.25%' }}
-                  image="https://images.pexels.com/photos/45201/kitty-cat-kitten-pet-45201.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
-                  title="Author"
-                />
-              </Link>
-              <CardActions disableSpacing>
-                <Button>
-                  <MdFavorite /> 0
-                </Button>
-              </CardActions>
-            </Card>
-          </Grid>
-          <Grid item xs={2}>
-            <Card>
-              <CardHeader title={<Link to="/">Author of image</Link>} />
-              <Link to="/">
-                <CardMedia
-                  style={{ paddingTop: '56.25%' }}
-                  image="https://images.pexels.com/photos/45201/kitty-cat-kitten-pet-45201.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
-                  title="Author"
-                />
-              </Link>
-              <CardActions disableSpacing>
-                <Button>
-                  <MdFavorite /> 0
-                </Button>
-              </CardActions>
-            </Card>
-          </Grid>
-        </Grid>
+        )}
       </Layout>
     );
   }
