@@ -15,7 +15,11 @@ const RelatedImage = ({ id }) => (
 const RelatedImages = ({ id }) => {
   const [images, setImages] = useState([]);
   useEffect(() => {
-    setImages([3, 4, 5, 6, 7, 8]);
+    const randomImages = [];
+    for (let i = 0; i < 5; i++) {
+      randomImages.push(Math.floor(Math.random() * Math.floor(1000)));
+    }
+    setImages(randomImages);
   }, []);
   return (
     <div>
