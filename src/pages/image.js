@@ -8,6 +8,7 @@ import Layout from "../components/layout";
 import CenteredModal from "../components/centeredModal";
 import ImageZoom from "../components/imageZoom";
 import RelatedImages from "../components/relatedImages";
+import resize from '../utils/resize'
 
 const ENDPOINT = "https://picsum.photos/id/:id/info";
 
@@ -60,7 +61,8 @@ const ImagePage = () => {
               >
                 <img
                   width="100%"
-                  src={image.download_url}
+                  srcSet={`${resize(image.download_url, 2560)} 2x, ${resize(image.download_url, 1280)} 1x`}
+                  src={resize(image.download_url, 1280)}
                   alt={`Author: ${image.author}`}
                 />
               </a>

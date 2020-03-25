@@ -13,6 +13,7 @@ import axios from "axios";
 
 import Layout from "../components/layout";
 import InfiniteScroll from "../components/infiniteScroll";
+import resize from '../utils/resize'
 
 const ENDPOINT = "https://picsum.photos/v2/list";
 const IMAGES_LIMIT = 10;
@@ -66,7 +67,7 @@ class Homepage extends React.Component {
           <Link to={`/image/${image.id}`}>
             <CardMedia
               style={{ paddingTop: "56.25%" }}
-              image={image.download_url}
+              image={resize(image.download_url, 400)}
               title={image.author}
             />
           </Link>
