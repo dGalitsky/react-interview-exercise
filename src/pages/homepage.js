@@ -63,7 +63,7 @@ class Homepage extends React.Component {
       <Grid item xs={6} sm={4} lg={2} key={image.id}>
         <Card>
           <CardHeader title={image.author || "Unknown author"} />
-          <Link to={image.url}>
+          <Link to={`/image/${image.id}`}>
             <CardMedia
               style={{ paddingTop: "56.25%" }}
               image={image.download_url}

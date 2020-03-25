@@ -6,12 +6,15 @@ import axios from "axios";
 import { MdFileDownload } from "react-icons/md";
 
 import Layout from "../components/layout";
+import CenteredModal from "../components/centeredModal";
+import ImageZoom from "../components/imageZoom";
 
 const ENDPOINT = "https://picsum.photos/id/:id/info";
 
 const ImagePage = () => {
   const { id } = useParams();
   const [image, setImage] = useState({});
+  const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -45,14 +48,36 @@ const ImagePage = () => {
               </Grid>
             </Grid>
             <Grid item xs={8}>
-              <img
-                width="100%"
-                src={image.download_url}
-                alt={`Author: ${image.author}`}
-              />
+              <a
+                href={image.download_url}
+                onClick={e => {
+                  e.preventDefault();
+                  setModalOpen(true);
+                }}
+              >
+                <img
+                  width="100%"
+                  src={image.download_url}
+                  alt={`Author: ${image.author}`}
+                />
+              </a>
               Author: {image.author}
             </Grid>
           </Grid>
+
+          <CenteredModal
+            open={modalOpen}
+            onClose={() => {
+              setModalOpen(false);
+            }}
+            disableAutoFocus
+          >
+            <ImageZoom
+              src={image.download_url}
+              alt={`Author: ${image.author}`}
+            />
+          </CenteredModal>
+
           <div>
             <Typography variant="h5">Related images</Typography>
             <Grid container spacing={2} justify="space-between">
