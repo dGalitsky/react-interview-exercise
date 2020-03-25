@@ -8,7 +8,8 @@ import Layout from "../components/layout";
 import CenteredModal from "../components/centeredModal";
 import ImageZoom from "../components/imageZoom";
 import RelatedImages from "../components/relatedImages";
-import resize from '../utils/resize'
+import ErrorMessage from "../components/errorMessage";
+import resize from "../utils/resize";
 
 const ENDPOINT = "https://picsum.photos/id/:id/info";
 
@@ -17,6 +18,7 @@ const ImagePage = () => {
   const [image, setImage] = useState({});
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
+  const [err, setErr] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -25,13 +27,14 @@ const ImagePage = () => {
         const endpoint = ENDPOINT.replace(":id", id);
         const { data } = await axios.get(endpoint);
         if (typeof data !== "object") {
-          // Error handling
+          setErr(data);
+        } else {Î
+          setImage(data);
+          setLoading(false);
         }
-        setImage(data);
-        setLoading(false);
       } catch (err) {
-        // TODO: error handling,
-        alert(err);
+        setErr(err);
+        // setLoading(false);
       }
     };
     fetchData();
@@ -39,6 +42,7 @@ const ImagePage = () => {
 
   return (
     <Layout>
+      {err && <ErrorMessage />}
       {!loading ? (
         <>
           <Grid container spacing={2} justify="center">
@@ -61,7 +65,10 @@ const ImagePage = () => {
               >
                 <img
                   width="100%"
-                  srcSet={`${resize(image.download_url, 2560)} 2x, ${resize(image.download_url, 1280)} 1x`}
+                  srcSet={`${resize(image.download_url, 2560)} 2x, ${resize(
+                    image.download_url,
+                    1280
+                  )} 1x`}
                   src={resize(image.download_url, 1280)}
                   alt={`Author: ${image.author}`}
                 />

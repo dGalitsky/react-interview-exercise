@@ -22,11 +22,11 @@ class InfiniteScroll extends React.Component {
     super(props);
     this.sentinel = React.createRef();
     this.onScroll = debounce(this.onScroll, 500);
-  }
+  }Î
 
   onScroll = async () => {
     if (
-      this.sentinel.current.getBoundingClientRect().top <= window.innerHeight &&
+      this.sentinel.current && this.sentinel.current.getBoundingClientRect().top <= window.innerHeight &&
       !this.state.isLoading
     ) {
       this.setState({ isLoading: true });
