@@ -1,29 +1,33 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import { useParams } from "react-router";
-import { Grid, IconButton, Typography } from "@material-ui/core";
+import { Grid, IconButton } from "@material-ui/core";
 import axios from "axios";
 import { MdFileDownload } from "react-icons/md";
 
 import Layout from "../components/layout";
 import CenteredModal from "../components/centeredModal";
 import ImageZoom from "../components/imageZoom";
+import RelatedImages from "../components/relatedImages";
 
 const ENDPOINT = "https://picsum.photos/id/:id/info";
 
 const ImagePage = () => {
   const { id } = useParams();
   const [image, setImage] = useState({});
+  const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
+    setLoading(true);
     const fetchData = async () => {
       try {
         const endpoint = ENDPOINT.replace(":id", id);
         const { data } = await axios.get(endpoint);
         if (typeof data !== "object") {
+          // Error handling
         }
         setImage(data);
+        setLoading(false);
       } catch (err) {
         // TODO: error handling,
         alert(err);
@@ -34,8 +38,7 @@ const ImagePage = () => {
 
   return (
     <Layout>
-      {!image && "Please wait a moment..."}
-      {image && (
+      {!loading ? (
         <>
           <Grid container spacing={2} justify="center">
             <Grid item xs={12}>
@@ -78,27 +81,10 @@ const ImagePage = () => {
             />
           </CenteredModal>
 
-          <div>
-            <Typography variant="h5">Related images</Typography>
-            <Grid container spacing={2} justify="space-between">
-              <Grid item>
-                <Link to="/image/0">First</Link>
-              </Grid>
-              <Grid item>
-                <Link to="/image/1">Second</Link>
-              </Grid>
-              <Grid item>
-                <Link to="/image/2">Third</Link>
-              </Grid>
-              <Grid item>
-                <Link to="/image/3">Fourth</Link>
-              </Grid>
-              <Grid item>
-                <Link to="/image/4">Fifth</Link>
-              </Grid>
-            </Grid>
-          </div>
+          <RelatedImages id={id} />
         </>
+      ) : (
+        "Please wait a moment..."
       )}
     </Layout>
   );
