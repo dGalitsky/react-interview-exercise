@@ -12,7 +12,7 @@ const IMAGES_LIMIT = 10;
 
 class Homepage extends React.Component {
   state = {
-    images: [],Î
+    images: [],
     nextPage: 1,
     err: null,
     done: false

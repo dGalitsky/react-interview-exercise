@@ -13,7 +13,7 @@ const resize = (url, desiredWidth) => {
     return url;
   }
 
-  const [_str, endpoint, width, height] = match;
+  const [, endpoint, width, height] = match;
   const ratio = parseInt(width) / parseInt(height);
   return `${endpoint}${desiredWidth}/${Math.round(desiredWidth / ratio)}`;
 };

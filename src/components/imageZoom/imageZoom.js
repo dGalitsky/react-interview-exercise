@@ -129,6 +129,7 @@ class ImageZoom extends React.Component {
         >
           <img
             {...props}
+            alt="Zoomed"
             ref={this.image}
             style={zoom ? this.getImageStyle() : null}
             onMouseDown={this.startDrag}

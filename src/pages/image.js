@@ -28,13 +28,12 @@ const ImagePage = () => {
         const { data } = await axios.get(endpoint);
         if (typeof data !== "object") {
           setErr(data);
-        } else {Î
+        } else {
           setImage(data);
           setLoading(false);
         }
       } catch (err) {
         setErr(err);
-        // setLoading(false);
       }
     };
     fetchData();
