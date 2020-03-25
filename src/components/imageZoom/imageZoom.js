@@ -13,7 +13,12 @@ const ZOOMED_STYLE = {
 class ImageZoom extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { zoom: 0, position: { top: 0, left: 0 } };
+    this.state = {
+      zoom: 0,
+      minZoom: 0,
+      position: { top: 0, left: 0 },
+      containerStyle: {}
+    };
     this.container = React.createRef();
     this.image = React.createRef();
   }
@@ -28,14 +33,20 @@ class ImageZoom extends React.Component {
   }
 
   init = () => {
-    this.minZoom = Math.ceil(
-      (this.image.current.clientWidth / this.image.current.naturalWidth) * 100
-    );
-
     this.containerStyle = {
       width: this.container.current.clientWidth + "px",
       height: this.container.current.clientHeight + "px"
     };
+  };
+
+  onImageLoad = e => {
+    this.setState({
+      minZoom: Math.ceil((e.target.clientWidth / e.target.naturalWidth) * 100),
+      containerStyle: {
+        width: this.container.current.clientWidth + "px",
+        height: this.container.current.clientHeight + "px"
+      }
+    });
   };
 
   onResize = debounce(this.init, 500);
@@ -108,13 +119,13 @@ class ImageZoom extends React.Component {
 
   render() {
     const { className, ...props } = this.props;
-    const { zoom } = this.state;
+    const { zoom, minZoom, containerStyle } = this.state;
     return (
       <div className={className}>
         <div
           className="image-wrapper"
           ref={this.container}
-          style={zoom ? this.containerStyle : null}
+          style={zoom ? containerStyle : null}
         >
           <img
             {...props}
@@ -127,14 +138,15 @@ class ImageZoom extends React.Component {
             onMouseLeave={this.endDrag}
             onMouseMove={this.onMouseMove}
             onTouchMove={this.onMouseMove}
+            onLoad={this.onImageLoad}
           />
         </div>
         <Typography gutterBottom>Zoom</Typography>
         <Slider
-          value={this.state.zoom}
+          value={zoom}
           onChange={this.onZoomChange}
           valueLabelDisplay="auto"
-          min={this.minZoom}
+          min={minZoom}
           max={100}
           steps={5}
           valueLabelFormat={val => `${val}%`}
